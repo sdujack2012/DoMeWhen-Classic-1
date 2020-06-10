@@ -72,12 +72,13 @@ function Misc:Hotspotter()
     local shiftDown = IsShiftKeyDown()
     local ctrlDown = IsControlKeyDown()
     local vDown = GetKeyState(0x56)
+    local qDown = GetKeyState(0x51)
     local middleMouseDown = GetKeyState(0x04)
     local roamSize = DMW.Settings.profile.Grind.RoamDistance / 2
     local deleteSize = 10
     local x, y = GetMousePosition()
     local mx, my, mz = ScreenToWorld(x, y)
-    local engageSpot = middleMouseDown and mx ~= 0 and not PauseFlags.Hotspotting
+    local engageSpot = qDown and mx ~= 0 and not PauseFlags.Hotspotting
     local point = Point(mx, my, mz)
 
     -- Return early
