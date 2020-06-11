@@ -1060,25 +1060,12 @@ local Options = {
                 type = "group",
                 order = 2,
                 args = {
-                    FoodName = {
-                        type = "input",
-                        order = 1,
-                        name = "Food Name",
-                        desc = "Food to eat",
-                        width = "0.5",
-                        get = function()
-                            return DMW.Settings.profile.Grind.FoodName
-                        end,
-                        set = function(info, value)
-                            DMW.Settings.profile.Grind.FoodName = value
-                        end
-                    },
                     FoodAmount = {
                         type = "range",
                         order = 2,
                         name = "Food Amount",
                         desc = "How much food do we want in our bags?",
-                        width = "0.7",
+                        width = "full",
                         min = 20,
                         max = 400,
                         step = 20,
@@ -1115,25 +1102,12 @@ local Options = {
                             DMW.Settings.profile.Grind.BuyFood = value
                         end
                     },
-                    WaterName = {
-                        type = "input",
-                        order = 5,
-                        name = "Water Name",
-                        desc = "Water to drink",
-                        width = "0.5",
-                        get = function()
-                            return DMW.Settings.profile.Grind.WaterName
-                        end,
-                        set = function(info, value)
-                            DMW.Settings.profile.Grind.WaterName = value
-                        end
-                    },
                     WaterAmount = {
                         type = "range",
                         order = 6,
                         name = "Water Amount",
                         desc = "How much water do we want in our bags?",
-                        width = "0.7",
+                        width = "full",
                         min = 20,
                         max = 400,
                         step = 20,

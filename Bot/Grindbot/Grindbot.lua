@@ -177,7 +177,6 @@ function Grindbot:Pulse()
         Misc:DeleteTask()
         self:ClearBlackList()
         self:SetFoodAndWater()
-        if DMW.Player.Pet and not DMW.Player.Pet.Dead and DMW.Player.Pet.Target and not Combat:SearchEnemy() then PetFollow() end -- Stupid ass rotations using pets unnecesary
         Throttle = true
         C_Timer.After(0.1, function() Throttle = false end)
     end
@@ -338,17 +337,20 @@ function Grindbot:Rest()
         end
     end
 
-    if Settings.WaterName ~= '' then
+    local drinkName, drinkCount = Vendor:scanBagsForDrink();
+    local foodName, foodCount = Vendor:scanBagsForFood();
+
+    if drinkCount > 0 then
         if UnitPower('player', 0) / UnitPowerMax('player', 0) * 100 < Settings.RestMana and not Drinking and not Bandaging and not PauseFlags.CantDrink then
-            UseItemByName(Settings.WaterName)
+            UseItemByName(drinkName)
             PauseFlags.CantDrink = true
             C_Timer.After(1, function() PauseFlags.CantDrink = false end)
         end
     end
 
-    if Settings.FoodName ~= '' then
+    if foodCount > 0 then
         if DMW.Player.HP < Settings.RestHP and not Eating and not Bandaging and not PauseFlags.CantEat then
-            UseItemByName(Settings.FoodName)
+            UseItemByName(foodName)
             PauseFlags.CantEat = true
             C_Timer.After(1, function() PauseFlags.CantEat = false end)
         end
@@ -424,7 +426,7 @@ function Grindbot:SwapMode()
     end
 
     -- if we chose to buy food and we dont have any food, if we chose to buy water and we dont have any water, Vendor task.
-    if (Settings.BuyFood and not Misc:HasItem(Settings.FoodName)) or (Settings.BuyWater and not Misc:HasItem(Settings.WaterName)) then
+    if (Settings.BuyFood and foodCount == 0) or (Settings.BuyWater and drinkCount == 0) then
         Grindbot.Mode = Modes.Vendor
         if not VendorTask then
             Vendor:Reset()
@@ -463,22 +465,6 @@ function Grindbot:SwapMode()
     end
 
     Grindbot.Mode = Modes.Idle
-end
-
-function Grindbot:SetFoodAndWater()
-    if getBestFood() and getBestWater() then
-        if DMW.Player.Class == 'MAGE' then
-            if DMW.Settings.profile.Grind.autoFood and DMW.Settings.profile.Grind.FoodName ~= getBestFood() then
-                DMW.Settings.profile.Grind.FoodName = getBestFood()
-                Log:DebugInfo('Automatically set your food to ' .. getBestFood())
-            end
-
-            if DMW.Settings.profile.Grind.autoWater and DMW.Settings.profile.Grind.WaterName ~= getBestWater() then
-                DMW.Settings.profile.Grind.WaterName = getBestWater()
-                Log:DebugInfo('Automatically set your water to ' .. getBestWater())
-            end
-        end
-    end
 end
 
 function Grindbot:LoadSettings()

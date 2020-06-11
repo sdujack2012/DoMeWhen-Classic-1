@@ -11,7 +11,6 @@ DMW.Enums.Spells = {
             BerserkingTroll = {Ranks = {20554}},
             WillofTheForsaken = {Ranks = {7744}},
             WarStomp = {Ranks = {20549}},
-            BloodFury = {Ranks = {20572}}
         },
         Buffs = {
             SoulstoneResurrection = {Ranks = {20707}}

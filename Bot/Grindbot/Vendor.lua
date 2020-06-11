@@ -194,6 +194,50 @@ function Vendor:HasItem(name)
 
 end
 
+function Vendor:scanBagsForFood()
+    local playerLevel = UnitLevel('player')
+    local foodCount = 0
+    local foodName = ""
+    for bag=0, NUM_BAG_SLOTS do
+        for slot=1,GetContainerNumSlots(bag) do
+            local itemId = GetContainerItemID(bag,slot)
+            if itemId then
+                local _, itemCount = GetContainerItemInfo(bag, slot);
+                local itemName, _, _, _, itemMinLevel = GetItemInfo(itemId)
+                local spellName, _ = GetItemSpell(itemId)
+                if playerLevel - itemMinLevel <= 10 and playerLevel - itemMinLevel >= 0 and spellName == "Food" then
+                    foodName = itemName
+                    foodCount = itemCount
+                    return foodName, foodCount
+                end
+            end
+        end
+    end
+    return drinkName, drinkCount
+end
+
+function Vendor:scanBagsForDrink()
+    local playerLevel = UnitLevel('player')
+    local drinkCount = 0
+    local drinkName = ""
+    for bag=0, NUM_BAG_SLOTS do
+        for slot=1,GetContainerNumSlots(bag) do
+            local itemId = GetContainerItemID(bag,slot)
+            if itemId then
+                local _, itemCount = GetContainerItemInfo(bag, slot);
+                local itemName, _, _, _, itemMinLevel = GetItemInfo(itemId)
+                local spellName, _ = GetItemSpell(itemId)
+                if playerLevel - itemMinLevel <= 10 and playerLevel - itemMinLevel >= 0 and spellName == "Drink" then
+                    drinkName = itemName
+                    drinkCount = itemCount
+                    return drinkName, drinkCount
+                end
+            end
+        end
+    end
+    return drinkName, drinkCount
+end
+
 function Vendor:useHearthstone()
     local _,secleft = GetItemCooldown(6948)
     if DMW.Settings.profile.Grind.useHearthstone and secleft < 2 and not DMW.Player.Casting then
