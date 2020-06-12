@@ -176,7 +176,6 @@ function Grindbot:Pulse()
         if DMW.Settings.profile.Grind.openClams then Misc:ClamTask() end
         Misc:DeleteTask()
         self:ClearBlackList()
-        self:SetFoodAndWater()
         Throttle = true
         C_Timer.After(0.1, function() Throttle = false end)
     end
@@ -425,6 +424,9 @@ function Grindbot:SwapMode()
         return
     end
 
+    local drinkName, drinkCount = Vendor:scanBagsForDrink();
+    local foodName, foodCount = Vendor:scanBagsForFood();
+
     -- if we chose to buy food and we dont have any food, if we chose to buy water and we dont have any water, Vendor task.
     if (Settings.BuyFood and foodCount == 0) or (Settings.BuyWater and drinkCount == 0) then
         Grindbot.Mode = Modes.Vendor
@@ -492,13 +494,5 @@ function Grindbot:LoadSettings()
 
     if Settings.RestMana ~= DMW.Settings.profile.Grind.RestMana then
         Settings.RestMana = DMW.Settings.profile.Grind.RestMana
-    end
-
-    if Settings.FoodName ~= DMW.Settings.profile.Grind.FoodName then
-        Settings.FoodName = DMW.Settings.profile.Grind.FoodName
-    end
-
-    if Settings.WaterName ~= DMW.Settings.profile.Grind.WaterName then
-        Settings.WaterName = DMW.Settings.profile.Grind.WaterName
     end
 end

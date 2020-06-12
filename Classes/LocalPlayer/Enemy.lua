@@ -94,6 +94,20 @@ function LocalPlayer:GetEnemies(Yards)
     return Table, Count
 end
 
+function LocalPlayer:GetEngagedEnemies(Yards)
+    local Table = {}
+    local Count = 0
+    
+    for _, v in ipairs(DMW.Enemies) do
+        if v.Distance <= Yards and UnitCreatureTypeID(v.Pointer) ~= 11 and (UnitIsUnit(UnitTarget(v.Pointer), 'player') or UnitIsUnit(UnitTarget(v.Pointer), 'pet')) then
+            table.insert(Table, v)
+            Count = Count + 1
+        end
+    end
+    return Table, Count
+end
+
+
 function LocalPlayer:GetAttackable(Yards)
     local Table = {}
     local Count = 0

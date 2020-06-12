@@ -205,7 +205,7 @@ function Vendor:scanBagsForFood()
                 local _, itemCount = GetContainerItemInfo(bag, slot);
                 local itemName, _, _, _, itemMinLevel = GetItemInfo(itemId)
                 local spellName, _ = GetItemSpell(itemId)
-                if playerLevel - itemMinLevel <= 10 and playerLevel - itemMinLevel >= 0 and spellName == "Food" then
+                if playerLevel - itemMinLevel < 10 and playerLevel - itemMinLevel >= 0 and spellName == "Food" then
                     foodName = itemName
                     foodCount = itemCount
                     return foodName, foodCount
@@ -227,7 +227,7 @@ function Vendor:scanBagsForDrink()
                 local _, itemCount = GetContainerItemInfo(bag, slot);
                 local itemName, _, _, _, itemMinLevel = GetItemInfo(itemId)
                 local spellName, _ = GetItemSpell(itemId)
-                if playerLevel - itemMinLevel <= 10 and playerLevel - itemMinLevel >= 0 and spellName == "Drink" then
+                if playerLevel - itemMinLevel < 10 and playerLevel - itemMinLevel >= 0 and spellName == "Drink" then
                     drinkName = itemName
                     drinkCount = itemCount
                     return drinkName, drinkCount
@@ -257,48 +257,53 @@ function Vendor:DoTask()
     local BuyFood = DMW.Settings.profile.Grind.BuyFood
     local BuyWater = DMW.Settings.profile.Grind.BuyWater
     local RepairPercent = DMW.Settings.profile.Grind.RepairPercent
-    local FoodName = DMW.Settings.profile.Grind.FoodName
-    local WaterName = DMW.Settings.profile.Grind.WaterName
+    
     local MaxRarity = DMW.Settings.profile.Grind.MaximumVendorRarity - 1
     local FoodCount = DMW.Settings.profile.Grind.FoodAmount
     local WaterCount = DMW.Settings.profile.Grind.WaterAmount
-    local NeedWaterCount = WaterCount - GetItemCount(WaterName)
-    local NeedFoodCount = FoodCount - GetItemCount(FoodName)
+
+    local _, totalDrinkCount = Vendor:scanBagsForDrink();
+    local _, totalFoodCount = Vendor:scanBagsForFood();
+
+    local FoodName = ''
+    local WaterName = ''
+
+    local NeedWaterCount = WaterCount - totalDrinkCount
+    local NeedFoodCount = FoodCount - totalFoodCount
+
     local autoFood = DMW.Settings.profile.Grind.autoFood
     local autoWater = DMW.Settings.profile.Grind.autoWater
-    local foodList = getBestFood()
-    local bestWater = getBestWater()
 
     local RepairNPC = self:GetVendor(RepairVendorName)
     local FoodNPC = self:GetVendor(FoodVendorName)
-
+    local playerLevel = UnitLevel('player')
     -- Hacky Solution for cache?
     --if MerchantFrame:IsVisible() then MerchantNextPageButton:Click() end
 
     if DMW.Player.Class ~= 'MAGE' then
         if autoWater and MerchantFrame:IsVisible() then
             for i = 1, GetMerchantNumItems() do
-                local vitem = GetMerchantItemLink(i)
-                if vitem then
-                    if vitem:find(bestWater) and DMW.Settings.profile.Grind.WaterName ~= bestWater then
-                        WaterName = bestWater
-                        DMW.Settings.profile.Grind.WaterName = bestWater
-                        Log:DebugInfo('Automatically set ' .. bestWater .. ' as our Water.')
-                    end
+                local itemLink = GetMerchantItemLink(i)
+              
+                local itemName, _, _, _, itemMinLevel = GetItemInfo(itemLink)
+                local spellName, _ = GetItemSpell(itemLink)
+                if playerLevel - itemMinLevel < 10 and playerLevel - itemMinLevel >= 0 and spellName == "Drink" then
+                    WaterName = itemName
+                    break
+                   
                 end
             end
         end
 
         if autoFood and MerchantFrame:IsVisible() then
             for i = 1, GetMerchantNumItems() do
-                local vitem = GetMerchantItemLink(i)
-                if vitem then
-                    local itemName = GetItemInfo(vitem)
-                    if ArrayContains(foodList, itemName) and DMW.Settings.profile.Grind.FoodName ~= itemName then
-                        FoodName = itemName
-                        DMW.Settings.profile.Grind.FoodName = itemName
-                        Log:DebugInfo('Automatically set ' .. itemName .. ' as our Food')
-                    end
+                local itemLink = GetMerchantItemLink(i)
+              
+                local itemName, _, _, _, itemMinLevel = GetItemInfo(itemLink)
+                local spellName, _ = GetItemSpell(itemLink)
+                if playerLevel - itemMinLevel < 10 and playerLevel - itemMinLevel >= 0 and spellName == "Food" then
+                    FoodName = itemName
+                    break
                 end
             end
         end
