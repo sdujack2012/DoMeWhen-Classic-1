@@ -46,6 +46,9 @@ function DMW:ChatCommand(Input)
             ClearHotspot()
         elseif Commands[1] == "CLEARVENDOR" then
             ClearVendorWaypoints()
+        elseif Commands[1] == "SAVE" then
+            if Commands[2] then Commands[2] = strlower(Commands[2]) end
+            SaveProfileWithName(Commands[2])
         elseif Commands[1] == "BLACKLIST" then
             if DMW.Player.Target then
                 local Name = DMW.Player.Target.Name

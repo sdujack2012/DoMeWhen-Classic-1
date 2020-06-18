@@ -191,6 +191,11 @@ function Misc:HasItem(itemname)
 end
 
 function Misc:WorldMapHook()
+    if IsControlKeyDown() and IsShiftKeyDown() then
+        mapX, mapY, mapZ = nil, nil, nil
+        PauseFlags.Mapwalking = false
+    end
+
     if WorldMapFrame:IsVisible() and IsControlKeyDown() and IsMouseButtonDown("LeftButton") and not Mapwalking then
         local x, y = WorldMapFrame.ScrollContainer:GetNormalizedCursorPosition()
         local continentID, worldPosition = C_Map.GetWorldPosFromMapPos(WorldMapFrame:GetMapID(), CreateVector2D(x, y))
@@ -202,8 +207,8 @@ function Misc:WorldMapHook()
         if WZ then
             Log:NormalInfo('Moving to your selected destination.')
             mapX, mapY, mapZ = WX, WY, WZ
-            Mapwalking = true
-            C_Timer.After(1, function() Mapwalking = false end)
+            PauseFlags.Mapwalking = true
+            C_Timer.After(1, function() PauseFlags.Mapwalking = false end)
         end
     end
 

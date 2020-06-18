@@ -66,7 +66,8 @@ Spells.MAGE = {
         Polymorph = {Ranks = {118, 12824, 12825, 12826}},
         PolymorphPig = {Ranks = {28272}},
         PolymorphTurtle = {Ranks = {28271}},
-        WintersChill = {Ranks = {11180, 28592, 28593, 28594, 28595}}
+        WintersChill = {Ranks = {11180, 28592, 28593, 28594, 28595}},
+        Frostbite = {Ranks = {198120}}
     },
     Talents = {
         -- Arcane

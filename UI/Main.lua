@@ -9,7 +9,18 @@ local CurrentTab = "GeneralTab"
 local TabIndex = 2
 local currentProfile
 local currentLoadedProfiles = {}
-local profileName
+
+SaveProfileWithName = function(name)
+    DMW.Settings.profile.Grind.profileName = (name and name ~= "") and name or DMW.Settings.profile.Grind.profileName
+    local profileName = DMW.Settings.profile.Grind.profileName
+
+    if profileName and profileName ~= "" then
+        DMW.Bot.Log:DebugInfo('Saved file [' .. profileName .. ']')
+        SaveProfile(profileName)
+    else
+        DMW.Bot.Log:DebugInfo('Invalid FileName')
+    end
+end
 
 local exportTypes = {
     ["rotation"] = "Rotation",
@@ -1509,10 +1520,10 @@ local Options = {
                         desc = "Name Of The Profile To Save As",
                         width = "full",
                         get = function()
-                            return profileName
+                            return DMW.Settings.profile.Grind.profileName
                         end,
                         set = function(info, value)
-                            profileName = value
+                            DMW.Settings.profile.Grind.profileName = value
                         end
                     },
                     nextProfileName = {
@@ -1570,6 +1581,7 @@ local Options = {
                         desc = "Save Your Profile",
                         width = "full",
                         func = function()
+                            local profileName = DMW.Settings.profile.Grind.profileName
                             if profileName and profileName ~= "" then
                                 DMW.Bot.Log:DebugInfo('Saved file [' .. profileName .. ']')
                                 SaveProfile(profileName)
@@ -1659,8 +1671,9 @@ function LoadProfile()
         local profileContent = ReadFile(GetHackDirectory() .. "/Lilium/Grindbot/Profiles/" .. currentLoadedProfiles[currentProfile])
         local check, content = serializer:Deserialize(base64:decode(profileContent))
         if profileContent and check then
-            profileName = currentLoadedProfiles[currentProfile]:gsub(".txt", "")
+            
             DMW.Settings.profile.Grind = content
+            DMW.Settings.profile.Grind.profileName = currentLoadedProfiles[currentProfile]:gsub(".txt", "")
             DMW.Settings.profile.Grind.HotSpots = MigratePoints(DMW.Settings.profile.Grind.HotSpots)
             DMW.Settings.profile.Grind.VendorWaypoints = MigratePoints(DMW.Settings.profile.Grind.VendorWaypoints)
             DMW.Settings.profile.Grind.MountBlacklist = MigratePoints(DMW.Settings.profile.Grind.MountBlacklist)

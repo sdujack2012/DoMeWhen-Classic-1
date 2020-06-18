@@ -25,7 +25,7 @@ local acceptedRess = false
 local LoggingOut = false
 local ObsDistance = 4
 local ObsFlags = bit.bor(0x1, 0x10)
-
+local lastMovedTime = GetTime()
 -- Misc
 function CleanNils(t)
     local ans = {}
@@ -185,16 +185,13 @@ function Navigation:Movement()
 end
 
 function Navigation:MoveTo(toX, toY, toZ, straight)
-    if DMW.Player.Casting or EndX and GetDistanceBetweenPositions(toX, toY, toZ, EndX, EndY, EndZ) < 0.1 and NavPath then return end
+    if DMW.Player.Casting or EndX and GetDistanceBetweenPositions(toX, toY, toZ, EndX, EndY, EndZ) < 0.1 
+    and NavPath and GetTime() - lastMovedTime < 3000 then return end
     straight = straight or false
-    if DMW.Player.Swimming then straight = true end
-
-    -- lets do straight lines if distance is really far. (Untested)
-    if GetDistanceBetweenPositions(DMW.Player.PosX, DMW.Player.PosY, DMW.Player.PosZ, toX, toY, toZ) > 500 then straight = true end
-
+    if DMW.Player.Swimming then straight = true end    
     pathIndex = 1
     NavPath = CalculatePath(GetMapId(), DMW.Player.PosX, DMW.Player.PosY, DMW.Player.PosZ, toX, toY, toZ, straight, true, 1)
-
+    lastMovedTime = GetTime()
     if NavPath then
         EndX, EndY, EndZ = toX, toY, toZ
     end
