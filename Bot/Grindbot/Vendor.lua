@@ -81,6 +81,12 @@ function Vendor:Reset()
     TaskDone = false
 end
 
+function Vendor:isItemLevelSuitable(playerLevel, itemMinLevel)
+    return (playerLevel - itemMinLevel < 10 and playerLevel - itemMinLevel >= 0) or (playerLevel >= itemMinLevel and itemMinLevel >= 45) or not itemMinLevel
+end
+
+
+
 function Vendor:CanSell(maxrarity)
     for BagID = 0, 4 do
         for BagSlot = 1, GetContainerNumSlots(BagID) do
@@ -197,28 +203,34 @@ end
 function Vendor:scanBagsForFood()
     local playerLevel = UnitLevel('player')
     local foodCount = 0
+    local foodLevel = 0
     local foodName = ""
     for bag=0, NUM_BAG_SLOTS do
-        for slot=1,GetContainerNumSlots(bag) do
+        for slot=1, GetContainerNumSlots(bag) do
             local itemId = GetContainerItemID(bag,slot)
             if itemId then
                 local _, itemCount = GetContainerItemInfo(bag, slot);
                 local itemName, _, _, _, itemMinLevel = GetItemInfo(itemId)
                 local spellName, _ = GetItemSpell(itemId)
-                if playerLevel - itemMinLevel < 10 and playerLevel - itemMinLevel >= 0 and spellName == "Food" then
+
+                if itemCount > 0 and spellName == "Food" and foodLevel < itemMinLevel and playerLevel >= itemMinLevel then
                     foodName = itemName
-                    foodCount = itemCount
-                    return foodName, foodCount
+                    foodCount = itemCount  
+                    foodLevel = itemMinLevel
+                    if self:isItemLevelSuitable(playerLevel, itemMinLevel) then
+                        return foodName, foodCount, true
+                    end
                 end
             end
         end
     end
-    return drinkName, drinkCount
+    return foodName, foodCount, false
 end
 
 function Vendor:scanBagsForDrink()
     local playerLevel = UnitLevel('player')
     local drinkCount = 0
+    local drinkLevel = 0
     local drinkName = ""
     for bag=0, NUM_BAG_SLOTS do
         for slot=1,GetContainerNumSlots(bag) do
@@ -227,15 +239,18 @@ function Vendor:scanBagsForDrink()
                 local _, itemCount = GetContainerItemInfo(bag, slot);
                 local itemName, _, _, _, itemMinLevel = GetItemInfo(itemId)
                 local spellName, _ = GetItemSpell(itemId)
-                if playerLevel - itemMinLevel < 10 and playerLevel - itemMinLevel >= 0 and spellName == "Drink" then
+                if itemCount > 0  and spellName == "Drink" and drinkLevel < itemMinLevel and playerLevel >= itemMinLevel  then
                     drinkName = itemName
-                    drinkCount = itemCount
-                    return drinkName, drinkCount
+                    drinkCount = itemCount  
+                    drinkLevel = itemMinLevel
+                    if self:isItemLevelSuitable(playerLevel, itemMinLevel) then
+                        return drinkName, drinkCount, true
+                    end
                 end
             end
         end
     end
-    return drinkName, drinkCount
+    return drinkName, drinkCount, false
 end
 
 function Vendor:useHearthstone()
@@ -287,7 +302,7 @@ function Vendor:DoTask()
               
                 local itemName, _, _, _, itemMinLevel = GetItemInfo(itemLink)
                 local spellName, _ = GetItemSpell(itemLink)
-                if playerLevel - itemMinLevel < 10 and playerLevel - itemMinLevel >= 0 and spellName == "Drink" then
+                if self:isItemLevelSuitable(playerLevel, itemMinLevel) and spellName == "Drink" then
                     WaterName = itemName
                     break
                    
@@ -301,7 +316,7 @@ function Vendor:DoTask()
               
                 local itemName, _, _, _, itemMinLevel = GetItemInfo(itemLink)
                 local spellName, _ = GetItemSpell(itemLink)
-                if playerLevel - itemMinLevel < 10 and playerLevel - itemMinLevel >= 0 and spellName == "Food" then
+                if self:isItemLevelSuitable(playerLevel, itemMinLevel) and spellName == "Food" then
                     FoodName = itemName
                     break
                 end
