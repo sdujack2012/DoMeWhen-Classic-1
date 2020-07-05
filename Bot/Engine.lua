@@ -21,7 +21,7 @@ function Engine:Pulse()
     if DMW.Settings.profile.HUD.DrawVisuals == 1 then Navigation:DrawVisuals() end
     if not IsHackEnabled('antiafk') then SetHackEnabled ('antiafk', true) Log:DebugInfo('AntiAFK Enabled') end
     if IsHackEnabled('relog') ~= DMW.Settings.profile.Lilium.Relog then SetHackEnabled('relog', DMW.Settings.profile.Lilium.Relog) Log:DebugInfo('Auto Relog' .. (DMW.Settings.profile.Lilium.Relog and ' Enabled' or ' Disabled')) end
-    if not GetCVarBool("BlockTrades") then SetCVar("BlockTrades", 1) end
+
     if not passwordSet and DMW.Settings.profile.Lilium.Password ~= "" then RunMacroText('.login ' .. DMW.Settings.profile.Lilium.Password) Log:DebugInfo('Auto Relog Set With Password Specified') passwordSet = true end
     if not folderChecks then self:SetupFolders() folderChecks = true end
     if not readItemFile then self:LoadFile() SetProfiles() readItemFile = true C_Timer.After(1, function() readItemFile = false end) end
