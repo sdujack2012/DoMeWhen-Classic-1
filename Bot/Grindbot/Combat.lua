@@ -94,7 +94,7 @@ end
 function Combat:SearchAttackable()
     -- Search for hostiles around us and attack them first.
     for _, Unit in pairs(DMW.Attackable) do
-        if UnitClassification(Unit.Pointer) == 'normal' and UnitReaction(Unit.Pointer, 'player') < 4 and Unit.Distance <= Unit:AggroDistance() + 10 and (not UnitIsPVP(Unit.Pointer) or ObjectCreator(Unit.Pointer) and not UnitIsPVP(ObjectCreator(Unit.Pointer))) and not UnitIsTapDenied(Unit.Pointer) then
+        if self:IsGoodUnit(Unit.Pointer) and UnitClassification(Unit.Pointer) == 'normal' and UnitReaction(Unit.Pointer, 'player') < 4 and Unit.Distance <= Unit:AggroDistance() + 10 and (not UnitIsPVP(Unit.Pointer) or ObjectCreator(Unit.Pointer) and not UnitIsPVP(ObjectCreator(Unit.Pointer))) and not UnitIsTapDenied(Unit.Pointer) then
             return true, Unit
         end
     end
@@ -102,7 +102,7 @@ function Combat:SearchAttackable()
     -- Anti fucking wobble anoying fucking shit
     if DMW.Player.Target then
         local Enemy = DMW.Player.Target
-        if not UnitIsTapDenied(Enemy.Pointer) and not UnitIsDeadOrGhost(Enemy.Pointer) and Enemy.Attackable then
+        if self:IsGoodUnit(Enemy.Pointer) and not UnitIsTapDenied(Enemy.Pointer) and not UnitIsDeadOrGhost(Enemy.Pointer) and Enemy.Attackable then
             return true, Enemy
         end
     end
