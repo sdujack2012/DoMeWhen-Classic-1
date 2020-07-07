@@ -57,6 +57,9 @@ function DMW:ChatCommand(Input)
             else
                 DMW.Bot.Log:SevereInfo('No Target, No Blacklist!')
             end
+        elseif Commands[1] == "CLEARBLACKLIST" then
+            DMW.Settings.profile.Grind.targetBlacklist = {}
+            DMW.Bot.Log:DebugInfo('blacklist cleared')
         else
             LibStub("AceConfigCmd-3.0").HandleCommand(DMW, "lilium", "LILIUM", Input)
         end
