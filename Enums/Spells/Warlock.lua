@@ -54,14 +54,17 @@ Spells.WARLOCK = {
         SummonSuccubus = {Ranks = {712}},
         SummonVoidwalker = {Ranks = {697}},
         UnendingBreath = {Ranks = {5697}},
-		SummonMount = {Ranks = {5784,  23161}}
+        SummonMount = {Ranks = {5784,  23161}},
+        FelDomination = {Ranks = {18708}}
     },
     Buffs = {
         DemonArmor = {Ranks = {706, 1086, 11733, 11734, 11735}},
         DemonSkin = {Ranks = {687, 696}},
         Nightfall = {Ranks = {18094, 18095}},
         ShadowTrance = {Ranks = {17941}},
-        ShadowWard = {Ranks = {6229, 11739, 11740, 28610}}
+        ShadowWard = {Ranks = {6229, 11739, 11740, 28610}},
+        FelDomination = {Ranks = {18708}},
+        Sacrifice = {Ranks = {7812,19438,19440,19441,19442,19443}}
     },
     Debuffs = {
         Banish = {Ranks = {710, 18647}},
